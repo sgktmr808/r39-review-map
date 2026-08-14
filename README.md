@@ -37,14 +37,14 @@ python3 -m http.server 8080
 
 ```json
 {
-  "schema": "r39-review/1",
-  "world": { "radiusM": 625, "seed": 777, "seamLonRad": -0.89, "seamLonDeg": -51 },
-  "reviews": [
+"schema": "r39-review/1",
+"world": { "radiusM": 625, "seed": 777, "seamLonRad": -0.89, "seamLonDeg": -51 },
+"reviews": [
     { "id": 1, "kind": "add", "priority": "high",
       "cells": ["D3"], "point": { "lat": 39.9, "lon": 70.8 },
       "inCells": ["marina-provisional"],
       "title": "…", "body": "…" }
-  ]
+]
 }
 ```
 
