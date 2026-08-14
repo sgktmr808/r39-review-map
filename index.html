@@ -7,9 +7,14 @@
 body{margin:0;background:var(--bg);color:var(--fg);font:13px/1.6 -apple-system,"Hiragino Sans","Noto Sans JP",sans-serif;display:flex;height:100vh;overflow:hidden}
 #left{flex:1;min-width:0;display:flex;flex-direction:column}
 #right{width:380px;border-left:1px solid var(--line);display:flex;flex-direction:column;background:var(--panel)}
-#bar{padding:8px 12px;border-bottom:1px solid var(--line);display:flex;gap:14px;align-items:center;flex-wrap:wrap;font-size:12px}
-#bar label{display:inline-flex;gap:4px;align-items:center;color:var(--dim);cursor:pointer;white-space:nowrap}
-#toggles{display:inline-flex;gap:10px;flex-wrap:wrap;align-items:center}
+/* gap は Safari 14.1 未満の flexbox で効かず、チェックボックスと文字が重なる。margin で組む */
+#bar{padding:8px 12px;border-bottom:1px solid var(--line);display:flex;align-items:center;flex-wrap:wrap;font-size:12px;line-height:1.9}
+#bar>*{margin-right:14px}
+#bar label{display:inline-flex;align-items:center;color:var(--dim);cursor:pointer;white-space:nowrap;margin-right:12px}
+#bar label:last-child{margin-right:0}
+#bar input[type=checkbox]{margin:0 6px 0 0;flex:0 0 auto;width:14px;height:14px}
+#bar input[type=range]{margin-left:6px;vertical-align:middle}
+#toggles{display:inline-flex;flex-wrap:wrap;align-items:center}
 #wrap{flex:1;overflow:auto;background:#05070a}
 canvas{display:block;cursor:crosshair}
 .sec{padding:12px;border-bottom:1px solid var(--line)}
@@ -18,7 +23,9 @@ textarea,input,select{width:100%;background:#0d1117;color:var(--fg);border:1px s
 textarea{resize:vertical;min-height:52px}
 button{border:0;border-radius:6px;padding:7px 12px;font:inherit;font-weight:600;cursor:pointer;color:#08131f}
 .badd{background:var(--add)} .bfix{background:var(--fix)} .bexp{background:var(--sel);width:100%}
-.row{display:flex;gap:6px;align-items:center;margin-top:6px}
+.row{display:flex;align-items:center;margin-top:6px}
+.row>*{margin-right:6px}
+.row>*:last-child{margin-right:0}
 #cells{font-family:ui-monospace,monospace;color:var(--sel);min-height:20px;word-break:break-all}
 #list{flex:1;overflow:auto;padding:8px 12px}
 .rev{border:1px solid var(--line);border-left-width:4px;border-radius:6px;padding:8px;margin-bottom:8px;font-size:12px}
@@ -34,7 +41,7 @@ button{border:0;border-radius:6px;padding:7px 12px;font:inherit;font-weight:600;
     <span style="flex:1"></span>
     <label><input type="checkbox" id="lgrid" checked>格子</label>
     <span id="toggles"></span>
-    <label>拡大 <input type="range" id="zoom" min="30" max="200" value="60" style="width:90px"></label>
+    <label>拡大<input type="range" id="zoom" min="30" max="200" value="60" style="width:90px"></label>
   </div>
   <div id="wrap"><canvas id="cv"></canvas></div>
 </div>
