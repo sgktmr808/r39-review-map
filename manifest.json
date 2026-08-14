@@ -262,22 +262,22 @@
    "id": "PORT_C1",
    "kind": "port",
    "label": "PORT_C1",
-   "lat": 2.584,
-   "lon": 8.216,
-   "u": 1448.4,
-   "v": 953.6,
-   "cell": "H5",
+   "lat": 8.335,
+   "lon": 27.643,
+   "u": 1236.5,
+   "v": 890.8,
+   "cell": "G5",
    "note": "City1 mainland 海港"
   },
   {
    "id": "PORT_C2",
    "kind": "port",
    "label": "PORT_C2",
-   "lat": 6.509,
-   "lon": 169.968,
-   "u": 3611,
-   "v": 910.7,
-   "cell": "S5",
+   "lat": 14.481,
+   "lon": 137.296,
+   "u": 40.4,
+   "v": 823.8,
+   "cell": "A5",
    "note": "City2 mainland 海港(lake→sea channel)"
   },
   {
@@ -344,7 +344,7 @@
    "u": 3311.4,
    "v": 1699.2,
    "cell": "Q9",
-   "note": "標高 -19.7m"
+   "note": "標高 -24.0m"
   },
   {
    "id": "RAIL_A-ST0",
