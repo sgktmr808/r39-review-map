@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>R39 レビューマップ</title>
+<style>
+:root{--bg:#0d1117;--panel:#161b22;--line:#30363d;--fg:#e6edf3;--dim:#8b949e;--add:#3fb950;--fix:#f0883e;--sel:#58a6ff}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:13px/1.6 -apple-system,"Hiragino Sans","Noto Sans JP",sans-serif;display:flex;height:100vh;overflow:hidden}
+#left{flex:1;min-width:0;display:flex;flex-direction:column}
+#right{width:380px;border-left:1px solid var(--line);display:flex;flex-direction:column;background:var(--panel)}
+#bar{padding:8px 12px;border-bottom:1px solid var(--line);display:flex;gap:14px;align-items:center;flex-wrap:wrap;font-size:12px}
+#bar label{display:inline-flex;gap:4px;align-items:center;color:var(--dim);cursor:pointer;white-space:nowrap}
+#toggles{display:inline-flex;gap:10px;flex-wrap:wrap;align-items:center}
+#wrap{flex:1;overflow:auto;background:#05070a}
+canvas{display:block;cursor:crosshair}
+.sec{padding:12px;border-bottom:1px solid var(--line)}
+.sec h2{margin:0 0 8px;font-size:12px;letter-spacing:.08em;color:var(--dim);font-weight:600}
+textarea,input,select{width:100%;background:#0d1117;color:var(--fg);border:1px solid var(--line);border-radius:6px;padding:6px 8px;font:inherit}
+textarea{resize:vertical;min-height:52px}
+button{border:0;border-radius:6px;padding:7px 12px;font:inherit;font-weight:600;cursor:pointer;color:#08131f}
+.badd{background:var(--add)} .bfix{background:var(--fix)} .bexp{background:var(--sel);width:100%}
+.row{display:flex;gap:6px;align-items:center;margin-top:6px}
+#cells{font-family:ui-monospace,monospace;color:var(--sel);min-height:20px;word-break:break-all}
+#list{flex:1;overflow:auto;padding:8px 12px}
+.rev{border:1px solid var(--line);border-left-width:4px;border-radius:6px;padding:8px;margin-bottom:8px;font-size:12px}
+.rev.add{border-left-color:var(--add)} .rev.fix{border-left-color:var(--fix)}
+.rev b{display:block} .rev .m{color:var(--dim);font-family:ui-monospace,monospace;font-size:11px}
+.rev button{background:#30363d;color:var(--fg);float:right;padding:2px 8px;font-size:11px}
+#hint{color:var(--dim);font-size:11px;padding:0 12px 10px}
+</style></head><body>
+<div id="left">
+  <div id="bar">
+    <b style="color:var(--fg)">R39 レビューマップ</b>
+    <span id="meta" style="color:var(--dim)"></span>
+    <span style="flex:1"></span>
+    <label><input type="checkbox" id="lgrid" checked>格子</label>
+    <span id="toggles"></span>
+    <label>拡大 <input type="range" id="zoom" min="30" max="200" value="60" style="width:90px"></label>
+  </div>
+  <div id="wrap"><canvas id="cv"></canvas></div>
+</div>
+<div id="right">
+  <div class="sec">
+    <h2>選択中の区画</h2>
+    <div id="cells">未選択</div>
+    <div id="hint" style="padding:6px 0 0">クリックで選択 / もう一度で解除 / 何区画でも選べます</div>
+    <div class="row"><button class="bexp" id="clearsel" style="background:#30363d;color:var(--fg)">選択を解除</button></div>
+  </div>
+  <div class="sec">
+    <h2>追加実装レビュー</h2>
+    <input id="atitle" placeholder="例: D3 にヨットハーバーを実装">
+    <textarea id="abody" placeholder="どう作ってほしいか。参考にする実例があれば書いてください"></textarea>
+    <div class="row"><select id="apri"><option value="high">優先 高</option><option value="mid" selected>優先 中</option><option value="low">優先 低</option></select>
+    <button class="badd" id="aadd">追加として登録</button></div>
+  </div>
+  <div class="sec">
+    <h2>修正レビュー</h2>
+    <input id="ftitle" placeholder="例: H6 の環状水路が広すぎる">
+    <textarea id="fbody" placeholder="何がどうおかしいか。どうなってほしいか"></textarea>
+    <div class="row"><select id="fpri"><option value="high">優先 高</option><option value="mid" selected>優先 中</option><option value="low">優先 低</option></select>
+    <button class="bfix" id="fadd">修正として登録</button></div>
+  </div>
+  <div id="list"></div>
+  <div class="sec"><button class="bexp" id="exp">レビューをファイルへ書き出す</button></div>
+</div>
+<script>
+const S={man:null,img:null,sel:new Set(),revs:[],layers:{}};
+const KINDLABEL={city:"都市",district:"地区",mountain:"山",port:"港","rail-station":"鉄道駅","metro-station":"地下鉄駅",landmark:"ランドマーク",river:"河川",marina:"ハーバー"};
+const KINDCOL={city:"#58d3ff",district:"#7fb6dc",mountain:"#ff6a5a",port:"#ffc846",'rail-station':"#fa8038","metro-station":"#be6ef0",landmark:"#ffe08a",river:"#6ea8fa",marina:"#ff8cdc"};
+const cv=document.getElementById("cv"),cx=cv.getContext("2d");
+function cell(u,v){const g=S.man.grid,m=S.man.map;
+  const c=Math.min(g.cols-1,Math.max(0,Math.floor(u/g.cellWidthM))),r=Math.min(g.rows-1,Math.max(0,Math.floor(v/g.cellHeightM)));
+  return String.fromCharCode(65+c)+(r+1);}
+function cellRect(id){const g=S.man.grid;const c=id.charCodeAt(0)-65,r=parseInt(id.slice(1),10)-1;
+  return {x:c*g.cellWidthM,y:r*g.cellHeightM,w:g.cellWidthM,h:g.cellHeightM};}
+function draw(){
+  const z=+document.getElementById("zoom").value/100, m=S.man.map;
+  cv.width=Math.round(m.widthPx*z); cv.height=Math.round(m.heightPx*z);
+  cx.imageSmoothingEnabled=true;
+  cx.drawImage(S.img,0,0,cv.width,cv.height);
+  const s=cv.width/m.widthM;                       // px per meter
+  if(document.getElementById("lgrid").checked){
+    const g=S.man.grid;
+    cx.strokeStyle="rgba(230,237,243,.35)";cx.lineWidth=1;cx.font=(11)+"px ui-monospace,monospace";cx.fillStyle="rgba(230,237,243,.55)";
+    for(let c=0;c<=g.cols;c++){const x=c*g.cellWidthM*s;cx.beginPath();cx.moveTo(x,0);cx.lineTo(x,cv.height);cx.stroke();}
+    for(let r=0;r<=g.rows;r++){const y=r*g.cellHeightM*s;cx.beginPath();cx.moveTo(0,y);cx.lineTo(cv.width,y);cx.stroke();}
+    for(let c=0;c<g.cols;c++)for(let r=0;r<g.rows;r++){
+      cx.fillText(String.fromCharCode(65+c)+(r+1),(c+.5)*g.cellWidthM*s-11,(r+.5)*g.cellHeightM*s+4);}
+  }
+  for(const id of S.sel){const q=cellRect(id);
+    cx.fillStyle="rgba(88,166,255,.28)";cx.fillRect(q.x*s,q.y*s,q.w*s,q.h*s);
+    cx.strokeStyle="#58a6ff";cx.lineWidth=3;cx.strokeRect(q.x*s,q.y*s,q.w*s,q.h*s);}
+  for(const f of S.man.features){
+    if(!S.layers[f.kind]) continue;
+    const x=f.u*s,y=f.v*s,rr=f.kind==="city"?7:f.kind==="district"?5:4;
+    cx.beginPath();cx.arc(x,y,rr,0,7);cx.fillStyle=KINDCOL[f.kind]||"#fff";cx.fill();
+    cx.lineWidth=1.5;cx.strokeStyle="rgba(5,7,10,.85)";cx.stroke();
+    if(z>0.8&&(f.kind==="city"||f.kind==="mountain"||f.kind==="marina")){
+      cx.fillStyle="#e6edf3";cx.font="11px sans-serif";cx.fillText(f.label,x+9,y+4);}
+  }
+}
+cv.addEventListener("click",e=>{
+  const b=cv.getBoundingClientRect(),m=S.man.map,s=cv.width/m.widthM;
+  const u=(e.clientX-b.left)*(cv.width/b.width)/s, v=(e.clientY-b.top)*(cv.height/b.height)/s;
+  const id=cell(u,v); if(S.sel.has(id))S.sel.delete(id);else S.sel.add(id);
+  renderSel();draw();
+});
+function renderSel(){const a=[...S.sel].sort();document.getElementById("cells").textContent=a.length?a.join(" , "):"未選択";}
+function here(){ /* 選択区画の中心の緯度経度(代表点) */
+  const a=[...S.sel];if(!a.length)return null;const q=cellRect(a[0]);
+  const u=q.x+q.w/2,v=q.y+q.h/2,p=S.man.projection,R=S.man.world.radiusM;
+  const lat=((p.halfWidthM/2-v)/R)*180/Math.PI;
+  let lon=(p.aX-(u-p.halfWidthM))/R; while(lon<=-Math.PI)lon+=2*Math.PI; while(lon>Math.PI)lon-=2*Math.PI;
+  return {lat:+lat.toFixed(3),lon:+(lon*180/Math.PI).toFixed(3)};
+}
+function add(kind){
+  const t=document.getElementById(kind==="add"?"atitle":"ftitle"),b=document.getElementById(kind==="add"?"abody":"fbody"),p=document.getElementById(kind==="add"?"apri":"fpri");
+  if(!S.sel.size){alert("区画を選んでください");return;}
+  if(!t.value.trim()){alert("見出しを書いてください");return;}
+  S.revs.push({id:S.revs.length+1,kind,priority:p.value,cells:[...S.sel].sort(),point:here(),
+    inCells:S.man.features.filter(f=>S.sel.has(f.cell)).map(f=>f.id),
+    title:t.value.trim(),body:b.value.trim()});
+  t.value="";b.value="";save();renderList();
+}
+function renderList(){
+  const el=document.getElementById("list");
+  el.innerHTML=S.revs.length?"":'<div style="color:var(--dim);font-size:12px">まだ登録がありません</div>';
+  for(const r of S.revs){
+    const d=document.createElement("div");d.className="rev "+r.kind;
+    d.innerHTML='<button data-id="'+r.id+'">削除</button><b>'+(r.kind==="add"?"追加":"修正")+" / "+r.priority+" — "+esc(r.title)+'</b><div class="m">'+r.cells.join(",")+'</div>'+(r.body?'<div>'+esc(r.body)+'</div>':"");
+    el.appendChild(d);
+  }
+  el.querySelectorAll("button").forEach(b=>b.onclick=()=>{S.revs=S.revs.filter(x=>x.id!=b.dataset.id);save();renderList();});
+}
+const esc=s=>s.replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+const save=()=>localStorage.setItem("r39revs",JSON.stringify(S.revs));
+document.getElementById("exp").onclick=()=>{
+  const out={schema:"r39-review/1",world:S.man.world,mapGrid:S.man.grid,
+    exportedAtIso:new Date().toISOString(),reviewCount:S.revs.length,reviews:S.revs};
+  const blob=new Blob([JSON.stringify(out,null,2)],{type:"application/json"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);
+  a.download="r39-review-"+new Date().toISOString().slice(0,19).replace(/[:T]/g,"")+".json";
+  document.body.appendChild(a);a.click();a.remove();
+};
+document.getElementById("aadd").onclick=()=>add("add");
+document.getElementById("fadd").onclick=()=>add("fix");
+document.getElementById("clearsel").onclick=()=>{S.sel.clear();renderSel();draw();};
+document.getElementById("zoom").oninput=draw;
+document.getElementById("lgrid").onchange=draw;
+(async()=>{
+  S.man=await (await fetch("manifest.json")).json();
+  S.img=new Image();S.img.src="map.png";await S.img.decode();
+  for(const k of S.man.featureKinds)S.layers[k]=true;
+  document.getElementById("toggles").innerHTML=S.man.featureKinds.map(k=>
+    '<label><input type="checkbox" data-k="'+k+'" checked>'+(KINDLABEL[k]||k)+'</label>').join("");
+  document.querySelectorAll('#toggles input').forEach(i=>i.onchange=()=>{S.layers[i.dataset.k]=i.checked;draw();});
+  document.getElementById("meta").textContent=
+    S.man.grid.cols+"x"+S.man.grid.rows+" / 1 区画 "+S.man.grid.cellWidthM.toFixed(0)+"m / 世界 "+S.man.world.radiusM+"m / seed "+S.man.world.seed;
+  try{S.revs=JSON.parse(localStorage.getItem("r39revs")||"[]")}catch(e){S.revs=[]}
+  renderSel();renderList();draw();
+})();
+</script></body></html>
