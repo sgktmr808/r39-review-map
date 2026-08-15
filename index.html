@@ -60,11 +60,21 @@ button{border:0;border-radius:6px;padding:7px 12px;font:inherit;font-weight:600;
   #xring{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
     width:34px;height:34px;border:2px solid #58a6ff;border-radius:50%;box-shadow:0 0 0 1px rgba(5,7,10,.8)}
   /* 下から引き上げるシート */
+  /*
+   * シートは **1 本のスクロール**にする。内側の #list だけをスクロールにすると、
+   * 中身の合計(掴み手 + 選択 + 追加 + 修正 + 一覧 + 書き出し)が 86dvh を超えたぶんが
+   * 届かなくなる(実測: 書き出しボタンまで到達できなかった)。
+   */
   #right{--peek:148px;position:fixed;left:0;right:0;bottom:0;width:auto;height:86dvh;
     border-left:0;border-top:1px solid var(--line);border-radius:16px 16px 0 0;
     transform:translateY(calc(86dvh - var(--peek,148px)));
     transition:transform .22s cubic-bezier(.32,.72,0,1);z-index:20;
-    padding-bottom:env(safe-area-inset-bottom);box-shadow:0 -8px 28px rgba(0,0,0,.5)}
+    display:block;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;
+    padding-bottom:calc(env(safe-area-inset-bottom) + 28px);box-shadow:0 -8px 28px rgba(0,0,0,.5)}
+  /* 掴み手と照準行は上に貼り付けておく(スクロールしても選択を続けられる) */
+  #sheetTop{position:sticky;top:0;background:var(--panel);z-index:2}
+  #right .sec{flex:none}
+  #list{flex:none;max-height:none;overflow:visible}
   #right[data-detent="half"]{transform:translateY(48dvh)}
   #right[data-detent="full"]{transform:translateY(0)}
   #sheetTop{display:block;padding:6px 12px 10px;border-bottom:1px solid var(--line);flex:0 0 auto}
@@ -74,7 +84,6 @@ button{border:0;border-radius:6px;padding:7px 12px;font:inherit;font-weight:600;
   #aimlab{color:var(--dim);font-size:11px;margin-right:8px}
   #aimadd{flex:1;height:44px;background:var(--sel);color:#08131f;font-size:15px}
   #right .sec:first-of-type #hint{display:none}
-  #list{max-height:38dvh}
   /* レイヤーの別シート */
   #layersheet{display:block;position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--panel);
     border-top:1px solid var(--line);border-radius:16px 16px 0 0;padding:10px 14px calc(env(safe-area-inset-bottom) + 16px);
