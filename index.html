@@ -33,6 +33,63 @@ button{border:0;border-radius:6px;padding:7px 12px;font:inherit;font-weight:600;
 .rev b{display:block} .rev .m{color:var(--dim);font-family:ui-monospace,monospace;font-size:11px}
 .rev button{background:#30363d;color:var(--fg);float:right;padding:2px 8px;font-size:11px}
 #hint{color:var(--dim);font-size:11px;padding:0 12px 10px}
+
+/* ================= iPhone / タッチ端末 ================= *
+ * 幅 402px の縦画面に地図全体(4789px / 20 区画)を入れると 1 区画が 20px になり、
+ * Apple の最小タップ目標 44pt を満たせない。**指で直接タップするのは原理的に無理**なので、
+ * 画面中央に照準を固定し、地図の側を動かして合わせる方式にする(ユーザー選択)。
+ * フォームは iOS 標準の bottom sheet(peek / half / full の 3 段)。
+ * レイヤーは ≡ で別シートへ出し、地図の面積を最大に使う。 */
+#xhair,#menu,#sheetTop,#layersheet{display:none}
+@media (max-width:860px),(pointer:coarse){
+  body{display:block;height:100dvh;overflow:hidden}
+  #left{height:100dvh;display:flex;flex-direction:column;position:relative}
+  #bar{padding:calc(env(safe-area-inset-top) + 8px) 12px 8px;flex-wrap:nowrap;overflow:hidden}
+  #bar #meta,#bar label,#bar #toggles{display:none}
+  #bar #menu{display:inline-flex;align-items:center;justify-content:center;
+    width:44px;height:44px;margin:0 0 0 auto;background:#21262d;color:var(--fg);border-radius:10px;font-size:20px}
+  #wrap{flex:1;position:relative;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;touch-action:pan-x pan-y}
+  /* 照準。地図の上に固定し、地図の側をドラッグして合わせる */
+  /* 照準は #wrap の**外**に置く。中に置くと overflow:auto の内容(1916px)に対する
+     50% になり、画面中央からずれる(実測で確認)。位置は JS が見える枠から決める */
+  #xhair{display:block;position:absolute;transform:translate(-50%,-50%);
+    width:64px;height:64px;pointer-events:none;z-index:5}
+  #xhair::before,#xhair::after{content:"";position:absolute;background:#58a6ff;box-shadow:0 0 0 1px rgba(5,7,10,.8)}
+  #xhair::before{left:50%;top:0;width:2px;height:100%;margin-left:-1px}
+  #xhair::after{top:50%;left:0;height:2px;width:100%;margin-top:-1px}
+  #xring{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+    width:34px;height:34px;border:2px solid #58a6ff;border-radius:50%;box-shadow:0 0 0 1px rgba(5,7,10,.8)}
+  /* 下から引き上げるシート */
+  #right{--peek:148px;position:fixed;left:0;right:0;bottom:0;width:auto;height:86dvh;
+    border-left:0;border-top:1px solid var(--line);border-radius:16px 16px 0 0;
+    transform:translateY(calc(86dvh - var(--peek,148px)));
+    transition:transform .22s cubic-bezier(.32,.72,0,1);z-index:20;
+    padding-bottom:env(safe-area-inset-bottom);box-shadow:0 -8px 28px rgba(0,0,0,.5)}
+  #right[data-detent="half"]{transform:translateY(48dvh)}
+  #right[data-detent="full"]{transform:translateY(0)}
+  #sheetTop{display:block;padding:6px 12px 10px;border-bottom:1px solid var(--line);flex:0 0 auto}
+  #grab{width:40px;height:5px;border-radius:3px;background:#484f58;margin:0 auto 10px}
+  #aimrow{display:flex;align-items:center}
+  #aim{font-family:ui-monospace,monospace;font-size:22px;color:var(--sel);min-width:56px;font-weight:700}
+  #aimlab{color:var(--dim);font-size:11px;margin-right:8px}
+  #aimadd{flex:1;height:44px;background:var(--sel);color:#08131f;font-size:15px}
+  #right .sec:first-of-type #hint{display:none}
+  #list{max-height:38dvh}
+  /* レイヤーの別シート */
+  #layersheet{display:block;position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--panel);
+    border-top:1px solid var(--line);border-radius:16px 16px 0 0;padding:10px 14px calc(env(safe-area-inset-bottom) + 16px);
+    transform:translateY(102%);transition:transform .22s cubic-bezier(.32,.72,0,1);box-shadow:0 -8px 28px rgba(0,0,0,.5)}
+  #layersheet[data-open="1"]{transform:translateY(0)}
+  #layersheet h2{margin:6px 0 10px;font-size:12px;letter-spacing:.08em;color:var(--dim)}
+  #layersheet label{display:flex;align-items:center;min-height:44px;color:var(--fg);border-bottom:1px solid #21262d}
+  #layersheet input[type=checkbox]{width:20px;height:20px;margin:0 12px 0 0}
+  #layersheet .zoomrow{display:flex;align-items:center;min-height:52px}
+  #layersheet input[type=range]{flex:1;margin-left:12px;height:32px}
+  #lclose{width:100%;height:44px;margin-top:10px;background:#30363d;color:var(--fg)}
+  textarea{min-height:64px;font-size:16px}   /* 16px 未満は iOS が自動ズームする */
+  input,select{font-size:16px;min-height:44px}
+  button{min-height:44px}
+}
 </style></head><body>
 <div id="left">
 <div id="bar">
@@ -42,11 +99,20 @@ button{border:0;border-radius:6px;padding:7px 12px;font:inherit;font-weight:600;
     <label><input type="checkbox" id="lgrid" checked>格子</label>
     <label id="proplab" style="display:none"><input type="checkbox" id="lprop">提案を見る</label>
     <span id="toggles"></span>
-    <label>拡大<input type="range" id="zoom" min="30" max="200" value="60" style="width:90px"></label>
+    <label>拡大<input type="range" id="zoom" min="8" max="300" value="60" style="width:90px"></label>
+    <button id="menu" aria-label="レイヤー">≡</button>
 </div>
 <div id="wrap"><canvas id="cv"></canvas></div>
+<div id="xhair"><div id="xring"></div></div>
 </div>
-<div id="right">
+<div id="right" data-detent="peek">
+<div id="sheetTop">
+  <div id="grab"></div>
+  <div id="aimrow">
+    <span id="aimlab">照準</span><span id="aim">—</span>
+    <button id="aimadd">＋ 選択に追加</button>
+  </div>
+</div>
 <div class="sec">
     <h2>選択中の区画</h2>
     <div id="cells">未選択</div>
@@ -70,8 +136,16 @@ button{border:0;border-radius:6px;padding:7px 12px;font:inherit;font-weight:600;
 <div id="list"></div>
 <div class="sec"><button class="bexp" id="exp">レビューをファイルへ書き出す</button></div>
 </div>
+<div id="layersheet">
+  <h2>表示レイヤー</h2>
+  <div id="msheet"></div>
+  <div class="zoomrow"><span style="color:var(--dim)">拡大</span><input type="range" id="mzoom" min="8" max="300" value="60"></div>
+  <button id="lclose">閉じる</button>
+</div>
 <script>
 const S={man:null,img:null,imgProp:null,sel:new Set(),revs:[],layers:{}};
+/* タッチ端末か。照準方式・シート・レイヤーシートはこのときだけ有効にする */
+const MOBILE=window.matchMedia("(max-width:860px),(pointer:coarse)").matches;
 const KINDLABEL={city:"都市",district:"地区",mountain:"山",port:"港","rail-station":"鉄道駅","metro-station":"地下鉄駅",landmark:"ランドマーク",river:"河川",marina:"ハーバー"};
 const KINDCOL={city:"#58d3ff",district:"#7fb6dc",mountain:"#ff6a5a",port:"#ffc846",'rail-station':"#fa8038","metro-station":"#be6ef0",landmark:"#ffe08a",river:"#6ea8fa",marina:"#ff8cdc"};
 const cv=document.getElementById("cv"),cx=cv.getContext("2d");
@@ -108,12 +182,105 @@ for(const f of S.man.features){
 }
 }
 cv.addEventListener("click",e=>{
+if(MOBILE)return;                                   /* タッチ端末は照準で選ぶ(指が目標を隠すため) */
 const b=cv.getBoundingClientRect(),m=S.man.map,s=cv.width/m.widthM;
 const u=(e.clientX-b.left)*(cv.width/b.width)/s, v=(e.clientY-b.top)*(cv.height/b.height)/s;
 const id=cell(u,v); if(S.sel.has(id))S.sel.delete(id);else S.sel.add(id);
 renderSel();draw();
 });
-function renderSel(){const a=[...S.sel].sort();document.getElementById("cells").textContent=a.length?a.join(" , "):"未選択";}
+
+/* ================= タッチ端末の操作 ================= */
+const wrap=document.getElementById("wrap");
+/**
+ * 照準の位置。シートが下端 148px を覆うので、**覆われていない領域の中心**へ置く。
+ * 表示(#xhair)と判定(aimedCell)は必ず同じ点を使う。
+ */
+function aimPoint(){
+  const peek=parseFloat(getComputedStyle(document.getElementById("right")).getPropertyValue("--peek"))||148;
+  return {x:wrap.clientWidth/2, y:Math.max(60,(wrap.clientHeight-peek)/2)};
+}
+function placeXhair(){
+  if(!MOBILE)return;
+  const a=aimPoint(),x=document.getElementById("xhair");
+  x.style.left=(wrap.offsetLeft+a.x)+"px";
+  x.style.top =(wrap.offsetTop +a.y)+"px";
+}
+/** 照準の真下にある区画 */
+function aimedCell(){
+  const m=S.man.map,s=cv.width/m.widthM,a=aimPoint();
+  const u=(wrap.scrollLeft+a.x)/s, v=(wrap.scrollTop+a.y)/s;
+  return cell(u,v);
+}
+function renderAim(){
+  if(!MOBILE)return;
+  const id=aimedCell();
+  document.getElementById("aim").textContent=id;
+  const on=S.sel.has(id);
+  const b=document.getElementById("aimadd");
+  b.textContent=(on?"− ":"＋ ")+id+(on?" を選択から外す":" を選択に追加");
+  b.style.background=on?"#30363d":"var(--sel)";
+  b.style.color=on?"var(--fg)":"#08131f";
+}
+if(MOBILE){
+  placeXhair();
+  window.addEventListener("resize",()=>{placeXhair();renderAim();},{passive:true});
+  wrap.addEventListener("scroll",renderAim,{passive:true});
+  document.getElementById("aimadd").onclick=()=>{
+    const id=aimedCell(); if(S.sel.has(id))S.sel.delete(id);else S.sel.add(id);
+    renderSel();draw();renderAim();
+  };
+  /* ---- ピンチ拡大。中心を保ったまま zoom を変え、scroll で位置を戻す ---- */
+  let pinch=null;
+  const dist=(t)=>Math.hypot(t[0].clientX-t[1].clientX,t[0].clientY-t[1].clientY);
+  wrap.addEventListener("touchstart",e=>{
+    if(e.touches.length!==2)return;
+    const z=+document.getElementById("zoom").value;
+    const a=aimPoint();
+    pinch={d:dist(e.touches),z:z,
+      cx:(wrap.scrollLeft+a.x)/cv.width,
+      cy:(wrap.scrollTop+a.y)/cv.height};
+  },{passive:false});
+  wrap.addEventListener("touchmove",e=>{
+    if(!pinch||e.touches.length!==2)return;
+    e.preventDefault();
+    const k=dist(e.touches)/pinch.d;
+    const z=Math.max(8,Math.min(300,Math.round(pinch.z*k)));
+    const el=document.getElementById("zoom");
+    if(z===+el.value)return;
+    el.value=String(z);document.getElementById("mzoom").value=String(z);
+    draw();
+    const a2=aimPoint();
+    wrap.scrollLeft=pinch.cx*cv.width-a2.x;
+    wrap.scrollTop =pinch.cy*cv.height-a2.y;
+    renderAim();
+  },{passive:false});
+  wrap.addEventListener("touchend",()=>{pinch=null;},{passive:true});
+
+  /* ---- シートの 3 段(peek / half / full)。掴み手をドラッグ、またはタップで循環 ---- */
+  const sheet=document.getElementById("right"),grab=document.getElementById("grab");
+  const DET=["peek","half","full"];
+  const setDetent=(d)=>{sheet.dataset.detent=d;};
+  let drag=null;
+  const onDown=(y)=>{drag={y:y,d:sheet.dataset.detent,moved:false};};
+  const onMove=(y)=>{ if(!drag)return; const dy=y-drag.y; if(Math.abs(dy)>8)drag.moved=true;
+    if(Math.abs(dy)<28)return;
+    const i=DET.indexOf(drag.d), ni=Math.max(0,Math.min(2,i+(dy<0?1:-1)));
+    setDetent(DET[ni]); drag.y=y; drag.d=DET[ni];};
+  const onUp=()=>{ if(drag&&!drag.moved){const i=DET.indexOf(sheet.dataset.detent);setDetent(DET[(i+1)%3]);} drag=null;};
+  grab.addEventListener("touchstart",e=>onDown(e.touches[0].clientY),{passive:true});
+  grab.addEventListener("touchmove",e=>onMove(e.touches[0].clientY),{passive:true});
+  grab.addEventListener("touchend",onUp,{passive:true});
+  document.getElementById("sheetTop").addEventListener("click",e=>{ if(e.target.id==="grab"||e.target.id==="sheetTop")return; });
+
+  /* ---- レイヤーの別シート ---- */
+  const ls=document.getElementById("layersheet");
+  document.getElementById("menu").onclick=()=>{ls.dataset.open=ls.dataset.open==="1"?"0":"1";};
+  document.getElementById("lclose").onclick=()=>{ls.dataset.open="0";};
+  document.getElementById("mzoom").oninput=()=>{
+    document.getElementById("zoom").value=document.getElementById("mzoom").value;draw();renderAim();};
+}
+function renderSel(){const a=[...S.sel].sort();document.getElementById("cells").textContent=a.length?a.join(" , "):"未選択";
+if(MOBILE&&document.getElementById("aim").textContent!=="—")renderAim();}
 function here(){ /* 選択区画の中心の緯度経度(代表点) */
 const a=[...S.sel];if(!a.length)return null;const q=cellRect(a[0]);
 const u=q.x+q.w/2,v=q.y+q.h/2,p=S.man.projection,R=S.man.world.radiusM;
@@ -173,6 +340,31 @@ document.querySelectorAll('#toggles input').forEach(i=>i.onchange=()=>{S.layers[
 document.getElementById("meta").textContent=
     S.man.grid.cols+"x"+S.man.grid.rows+" / 1 区画 "+S.man.grid.cellWidthM.toFixed(0)+"m / 世界 "+S.man.world.radiusM+"m / seed "+S.man.world.seed;
 try{S.revs=JSON.parse(localStorage.getItem("r39revs")||"[]")}catch(e){S.revs=[]}
+if(MOBILE){
+    /*
+     * 既定の拡大率。区画は元画像で 239px なので、44pt(Apple の最小タップ目標)を満たすには
+     * 18% 以上。読みやすさと視野(画面に何区画入るか)の兼ね合いで 40% を既定にする
+     * (1 区画 96px / 画面に横 4.2 区画)。全体を見たいときはピンチで 8% まで引ける。
+     */
+    document.getElementById("zoom").value="40";
+    document.getElementById("mzoom").value="40";
+    /* レイヤーはヘッダーではなく ≡ の別シートへ出す(地図の面積を最大に使う) */
+    document.getElementById("msheet").innerHTML=
+      '<label><input type="checkbox" id="mgrid" checked>格子</label>'
+      +(S.imgProp?'<label><input type="checkbox" id="mprop">提案を見る</label>':'')
+      +S.man.featureKinds.map(k=>'<label><input type="checkbox" data-mk="'+k+'" checked>'+(KINDLABEL[k]||k)+'</label>').join("");
+    document.getElementById("mgrid").onchange=e=>{document.getElementById("lgrid").checked=e.target.checked;draw();};
+    if(S.imgProp)document.getElementById("mprop").onchange=e=>{document.getElementById("lprop").checked=e.target.checked;draw();};
+    document.querySelectorAll('#msheet input[data-mk]').forEach(i=>i.onchange=()=>{S.layers[i.dataset.mk]=i.checked;draw();});
+}
 renderSel();renderList();draw();
+if(MOBILE){
+    /* 島(city3)を初期表示にする。全体表示は 1 区画 20px でタップできないので中心を寄せる */
+    const g=S.man.grid,m=S.man.map,sc=cv.width/m.widthM;
+    const a0=aimPoint();
+    wrap.scrollLeft=Math.max(0,(3.0*g.cellWidthM)*sc-a0.x);
+    wrap.scrollTop =Math.max(0,(4.5*g.cellHeightM)*sc-a0.y);
+    placeXhair();renderAim();
+}
 })();
 </script></body></html>
