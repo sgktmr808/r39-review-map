@@ -1,6 +1,6 @@
 {
  "generatedAtIso": "0000-01-01T00:00:00.000Z",
- "mapSha": "592e5363685dda0c",
+ "mapSha": "a3d90b773518af11",
  "world": {
   "radiusM": 625,
   "seed": 777,
@@ -401,6 +401,61 @@
    "v": 238.6,
    "cell": "P2",
    "note": "海側の突端 / 柵 28m"
+  },
+  {
+   "id": "villa-house",
+   "kind": "landmark",
+   "label": "別荘:主棟",
+   "lat": 81.02,
+   "lon": -178.41,
+   "u": 3484.2,
+   "v": 98,
+   "cell": "R1",
+   "note": "造成面 11.0m / 私道 225m / 私設の橋 支間 24.5m"
+  },
+  {
+   "id": "villa-court",
+   "kind": "landmark",
+   "label": "別荘:岬の車寄せ",
+   "lat": 80.104,
+   "lon": 171.72,
+   "u": 3591.9,
+   "v": 107.9,
+   "cell": "S1",
+   "note": "造成面 10.6m / 私道 225m / 私設の橋 支間 24.5m"
+  },
+  {
+   "id": "villa-pavilion",
+   "kind": "landmark",
+   "label": "別荘:離れ",
+   "lat": 81.088,
+   "lon": 171.04,
+   "u": 3599.3,
+   "v": 97.2,
+   "cell": "S1",
+   "note": "造成面 10.3m / 私道 225m / 私設の橋 支間 24.5m"
+  },
+  {
+   "id": "villa-garage",
+   "kind": "landmark",
+   "label": "別荘:ガレージと門",
+   "lat": 73.129,
+   "lon": -179.695,
+   "u": 3498.2,
+   "v": 184,
+   "cell": "R1",
+   "note": "造成面 13.5m / 私道 225m / 私設の橋 支間 24.5m"
+  },
+  {
+   "id": "villa-bridge",
+   "kind": "landmark",
+   "label": "別荘:私設の橋",
+   "lat": 78.763,
+   "lon": 175.116,
+   "u": 3554.8,
+   "v": 122.6,
+   "cell": "S1",
+   "note": "支間 24.5m / 床版 13.31 → 10.6m / 桁下 最大 12.77m"
   },
   {
    "id": "river-a-source",
