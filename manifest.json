@@ -1,6 +1,6 @@
 {
  "generatedAtIso": "0000-01-01T00:00:00.000Z",
- "mapSha": "a3d90b773518af11",
+ "mapSha": "26609b718a3cf004",
  "world": {
   "radiusM": 625,
   "seed": 777,
@@ -456,6 +456,50 @@
    "v": 122.6,
    "cell": "S1",
    "note": "支間 24.5m / 床版 13.31 → 10.6m / 桁下 最大 12.77m"
+  },
+  {
+   "id": "tower-supertall",
+   "kind": "landmark",
+   "label": "湖の超高層ビル",
+   "lat": -1.663,
+   "lon": -179.928,
+   "u": 3500.8,
+   "v": 999.9,
+   "cell": "R6",
+   "note": "40 層 / 高さ 180m / 屋上 標高 228m / 頂部 230m / 三角形が 90° ねじれて立ち上がる / 中央に吹き抜け"
+  },
+  {
+   "id": "tower-island",
+   "kind": "landmark",
+   "label": "湖の埋め立て地",
+   "lat": -5.33,
+   "lon": -179.928,
+   "u": 3500.8,
+   "v": 1039.9,
+   "cell": "R6",
+   "note": "甲板 1.07ha / 標高 48.0m / 護岸 1:1.5(13.7m)/ 島ぜんぶ 1.67ha"
+  },
+  {
+   "id": "tower-metro-entrance",
+   "kind": "landmark",
+   "label": "湖の超高層ビル:地下鉄の出入口",
+   "lat": 2.058,
+   "lon": -178.624,
+   "u": 3486.6,
+   "v": 959.3,
+   "cell": "R5",
+   "note": "C2-civic(RING_B + M4 + M5)へ 竪坑 68m / 低層部 9m"
+  },
+  {
+   "id": "tower-bridge",
+   "kind": "landmark",
+   "label": "湖の超高層ビル:連絡橋",
+   "lat": 11.4,
+   "lon": -179.928,
+   "u": 3500.8,
+   "v": 857.4,
+   "cell": "R5",
+   "note": "支間 143m / 幅 9m / 橋脚 4 本 / 床 標高 48.0m"
   },
   {
    "id": "river-a-source",
