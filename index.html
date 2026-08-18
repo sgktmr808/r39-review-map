@@ -152,7 +152,7 @@ button{border:0;border-radius:6px;padding:7px 12px;font:inherit;font-weight:600;
   <button id="lclose">閉じる</button>
 </div>
 <script>
-const S={man:null,img:null,imgProp:null,sel:new Set(),revs:[],layers:{}};
+const S={man:null,img:null,imgProp:null,sel:new Set(),revs:[],layers:{},dispW:0,dispH:0};
 /* タッチ端末か。照準方式・シート・レイヤーシートはこのときだけ有効にする */
 const MOBILE=window.matchMedia("(max-width:860px),(pointer:coarse)").matches;
 const KINDLABEL={city:"都市",district:"地区",mountain:"山",port:"港","rail-station":"鉄道駅","metro-station":"地下鉄駅",landmark:"ランドマーク",river:"河川",marina:"ハーバー"};
@@ -165,7 +165,20 @@ function cellRect(id){const g=S.man.grid;const c=id.charCodeAt(0)-65,r=parseInt(
 return {x:c*g.cellWidthM,y:r*g.cellHeightM,w:g.cellWidthM,h:g.cellHeightM};}
 function draw(){
 const z=+document.getElementById("zoom").value/100, m=S.man.map;
-cv.width=Math.round(m.widthPx*z); cv.height=Math.round(m.heightPx*z);
+/*
+ * **iOS Safari は canvas の面積に上限がある**(超えると中身が捨てられて真っ黒になる)。
+ * 拡大 300% だと 4789x2395 の 3 倍 = 103 Mpx になり、iPhone では確実に超える。
+ * 表示の大きさ(CSS)は要求どおりにして、**backing store だけ**上限内へ縮める。
+ * 拡大するとぼやけるが黒くはならない。
+ * これで backing != 表示 になるので、**CSS px を扱う所は S.dispW/S.dispH を使う**
+ * (照準の判定 aimedCell とピンチの中心保持。scripts/r39-review-aim-check.ts が一致を見る)。
+ */
+const dispW=Math.round(m.widthPx*z), dispH=Math.round(m.heightPx*z);
+const MAX_CANVAS_AREA=12e6;
+const k=Math.min(1,Math.sqrt(MAX_CANVAS_AREA/(dispW*dispH)));
+cv.width=Math.max(1,Math.round(dispW*k)); cv.height=Math.max(1,Math.round(dispH*k));
+cv.style.width=dispW+"px"; cv.style.height=dispH+"px";
+S.dispW=dispW; S.dispH=dispH;
 cx.imageSmoothingEnabled=true;
 const useProp=S.imgProp&&document.getElementById("lprop")&&document.getElementById("lprop").checked;
 cx.drawImage(useProp?S.imgProp:S.img,0,0,cv.width,cv.height);
@@ -216,7 +229,8 @@ function placeXhair(){
 }
 /** 照準の真下にある区画 */
 function aimedCell(){
-  const m=S.man.map,s=cv.width/m.widthM,a=aimPoint();
+  /* scrollLeft も aimPoint も CSS px。縮尺は **表示側**で取る(backing は上限で縮むことがある) */
+  const m=S.man.map,s=S.dispW/m.widthM,a=aimPoint();
   const u=(wrap.scrollLeft+a.x)/s, v=(wrap.scrollTop+a.y)/s;
   return cell(u,v);
 }
@@ -246,8 +260,8 @@ if(MOBILE){
     const z=+document.getElementById("zoom").value;
     const a=aimPoint();
     pinch={d:dist(e.touches),z:z,
-      cx:(wrap.scrollLeft+a.x)/cv.width,
-      cy:(wrap.scrollTop+a.y)/cv.height};
+      cx:(wrap.scrollLeft+a.x)/S.dispW,
+      cy:(wrap.scrollTop+a.y)/S.dispH};
   },{passive:false});
   wrap.addEventListener("touchmove",e=>{
     if(!pinch||e.touches.length!==2)return;
@@ -259,8 +273,8 @@ if(MOBILE){
     el.value=String(z);document.getElementById("mzoom").value=String(z);
     draw();
     const a2=aimPoint();
-    wrap.scrollLeft=pinch.cx*cv.width-a2.x;
-    wrap.scrollTop =pinch.cy*cv.height-a2.y;
+    wrap.scrollLeft=pinch.cx*S.dispW-a2.x;
+    wrap.scrollTop =pinch.cy*S.dispH-a2.y;
     renderAim();
   },{passive:false});
   wrap.addEventListener("touchend",()=>{pinch=null;},{passive:true});
