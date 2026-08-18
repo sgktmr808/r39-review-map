@@ -31,10 +31,10 @@
   "district",
   "mountain",
   "port",
+  "landmark",
   "river",
   "rail-station",
   "metro-station",
-  "landmark",
   "marina"
  ],
  "features": [
@@ -301,6 +301,105 @@
    "v": 788.9,
    "cell": "B5",
    "note": "City3第2港(City2 側)"
+  },
+  {
+   "id": "shrine-shrine",
+   "kind": "landmark",
+   "label": "社:山頂",
+   "lat": -15.424,
+   "lon": -63.248,
+   "u": 2228,
+   "v": 1150,
+   "cell": "L6",
+   "note": "造成面 217.9m / 登山道 654m の一部"
+  },
+  {
+   "id": "shrine-resthut",
+   "kind": "landmark",
+   "label": "休憩所",
+   "lat": -25.967,
+   "lon": -62.056,
+   "u": 2215,
+   "v": 1265,
+   "cell": "L7",
+   "note": "造成面 150.3m / 登山道 654m の一部"
+  },
+  {
+   "id": "shrine-onsen",
+   "kind": "landmark",
+   "label": "温泉",
+   "lat": -33.576,
+   "lon": -65.081,
+   "u": 2248,
+   "v": 1348,
+   "cell": "L7",
+   "note": "造成面 85.5m / 登山道 654m の一部"
+  },
+  {
+   "id": "shrine-lodge",
+   "kind": "landmark",
+   "label": "山の宿",
+   "lat": -33.209,
+   "lon": -62.881,
+   "u": 2224,
+   "v": 1344,
+   "cell": "L7",
+   "note": "造成面 86.3m / 登山道 654m の一部"
+  },
+  {
+   "id": "shrine-trailhead",
+   "kind": "landmark",
+   "label": "登山口",
+   "lat": -16.524,
+   "lon": -56.281,
+   "u": 2152,
+   "v": 1162,
+   "cell": "K6",
+   "note": "造成面 65.0m / 登山道 654m の一部"
+  },
+  {
+   "id": "lighthouse-tower",
+   "kind": "landmark",
+   "label": "旧灯台跡:塔",
+   "lat": 65.766,
+   "lon": -138.064,
+   "u": 3044.1,
+   "v": 264.4,
+   "cell": "P2",
+   "note": "造成面 19.6m / 公園 0.37ha / 園路 175m / 取り付け道路 343m"
+  },
+  {
+   "id": "lighthouse-quarters",
+   "kind": "landmark",
+   "label": "旧灯台跡:官舎跡",
+   "lat": 64.993,
+   "lon": -141.089,
+   "u": 3077.1,
+   "v": 272.8,
+   "cell": "P2",
+   "note": "造成面 19.2m / 公園 0.37ha / 園路 175m / 取り付け道路 343m"
+  },
+  {
+   "id": "lighthouse-carpark",
+   "kind": "landmark",
+   "label": "旧灯台跡:駐車場",
+   "lat": 60.809,
+   "lon": -144.774,
+   "u": 3117.3,
+   "v": 318.4,
+   "cell": "P2",
+   "note": "造成面 20.4m / 公園 0.37ha / 園路 175m / 取り付け道路 343m"
+  },
+  {
+   "id": "lighthouse-viewpoint",
+   "kind": "landmark",
+   "label": "旧灯台跡:展望所",
+   "lat": 68.123,
+   "lon": -134.664,
+   "u": 3007,
+   "v": 238.6,
+   "cell": "P2",
+   "note": "海側の突端 / 柵 28m"
   },
   {
    "id": "river-a-source",
