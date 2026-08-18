@@ -1,6 +1,6 @@
 {
  "generatedAtIso": "0000-01-01T00:00:00.000Z",
- "mapSha": "26609b718a3cf004",
+ "mapSha": "5657d8789d8fb961",
  "world": {
   "radiusM": 625,
   "seed": 777,
@@ -357,6 +357,61 @@
    "v": 1162,
    "cell": "K6",
    "note": "造成面 65.0m / 登山道 654m の一部"
+  },
+  {
+   "id": "onsen-soyu",
+   "kind": "landmark",
+   "label": "温泉街:共同浴場",
+   "lat": -23.685,
+   "lon": -52.445,
+   "u": 2110.2,
+   "v": 1240.1,
+   "cell": "K7",
+   "note": "共同浴場(広場のため町家 4 棟ぶんを空けた)"
+  },
+  {
+   "id": "onsen-yumoto",
+   "kind": "landmark",
+   "label": "温泉街:湯本",
+   "lat": -21.785,
+   "lon": -55.941,
+   "u": 2148.3,
+   "v": 1219.4,
+   "cell": "K7",
+   "note": "標高 65.07m / 引湯路 192m"
+  },
+  {
+   "id": "onsen-machi-torii",
+   "kind": "landmark",
+   "label": "温泉街:入口の鳥居",
+   "lat": -16.745,
+   "lon": -55.096,
+   "u": 2139.1,
+   "v": 1164.4,
+   "cell": "K6",
+   "note": "本通りの北の入口。登山口へ続く"
+  },
+  {
+   "id": "onsen-ashiyu",
+   "kind": "landmark",
+   "label": "温泉街:足湯",
+   "lat": -22.417,
+   "lon": -53.469,
+   "u": 2121.3,
+   "v": 1226.3,
+   "cell": "K7",
+   "note": "水路沿いの足湯"
+  },
+  {
+   "id": "onsen-town",
+   "kind": "district",
+   "label": "温泉街",
+   "lat": -29.465,
+   "lon": -53.354,
+   "u": 2120.1,
+   "v": 1303.2,
+   "cell": "K7",
+   "note": "旧市街 / 建物 128 棟 / 街路 24 本 / 温泉水の水路 82 点"
   },
   {
    "id": "lighthouse-tower",
