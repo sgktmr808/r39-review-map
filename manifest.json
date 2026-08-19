@@ -1,6 +1,6 @@
 {
  "generatedAtIso": "0000-01-01T00:00:00.000Z",
- "mapSha": "2e3bf32d2ee307ec",
+ "mapSha": "10968e68aa3bed44",
  "world": {
   "radiusM": 625,
   "seed": 777,
@@ -478,6 +478,83 @@
    "v": 310.4,
    "cell": "T2",
    "note": "枠 B 370 × 310m / 天端 最大 27.7m / 園路 360m"
+  },
+  {
+   "id": "port-fishing",
+   "kind": "port",
+   "label": "漁港(入り江の港)",
+   "lat": -66.457,
+   "lon": -41.942,
+   "u": 1995.6,
+   "v": 1706.7,
+   "cell": "K9",
+   "note": "枠 B 315 × 345m / 岸壁 56m / エプロン +3m / 泊地 −3.5m / 建物 58 棟"
+  },
+  {
+   "id": "port-market",
+   "kind": "landmark",
+   "label": "漁港:魚市場",
+   "lat": -65.812,
+   "lon": -40.756,
+   "u": 1982.7,
+   "v": 1699.6,
+   "cell": "K9",
+   "note": "エプロン(+3.0m)の上屋。荷捌き場と製氷・冷蔵庫・漁協が並ぶ"
+  },
+  {
+   "id": "port-umi",
+   "kind": "landmark",
+   "label": "漁港:海の駅",
+   "lat": -65.916,
+   "lon": -65.525,
+   "u": 2252.8,
+   "v": 1700.8,
+   "cell": "L9",
+   "note": "物産館と食堂。港湾道路が段丘へ出る所"
+  },
+  {
+   "id": "port-breakwater",
+   "kind": "landmark",
+   "label": "漁港:防波堤",
+   "lat": -70.118,
+   "lon": -38.864,
+   "u": 1962,
+   "v": 1746.6,
+   "cell": "J9",
+   "note": "51m / 天端 +4.5m / 先端に灯標"
+  },
+  {
+   "id": "port-logistics",
+   "kind": "district",
+   "label": "漁港:物流拠点",
+   "lat": -51.878,
+   "lon": -17.034,
+   "u": 1723.9,
+   "v": 1547.7,
+   "cell": "I8",
+   "note": "48.8m の台地 0.65ha / 上屋 4 + 事務所"
+  },
+  {
+   "id": "port-inns",
+   "kind": "landmark",
+   "label": "漁港:旅館と民宿",
+   "lat": -57.501,
+   "lon": -38.175,
+   "u": 1954.5,
+   "v": 1609,
+   "cell": "J9",
+   "note": "段丘の海側。湾を見下ろす 2 棟"
+  },
+  {
+   "id": "port-town",
+   "kind": "district",
+   "label": "漁港の街(段丘)",
+   "lat": -64.928,
+   "lon": -49.896,
+   "u": 2082.3,
+   "v": 1690,
+   "cell": "K9",
+   "note": "標高 20〜32m の段丘 / 家 40 棟 / 通り 12 本"
   },
   {
    "id": "lighthouse-tower",
