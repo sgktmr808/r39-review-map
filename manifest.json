@@ -1,6 +1,6 @@
 {
  "generatedAtIso": "0000-01-01T00:00:00.000Z",
- "mapSha": "10968e68aa3bed44",
+ "mapSha": "86a52abe4bbfc0d8",
  "world": {
   "radiusM": 625,
   "seed": 777,
@@ -33,8 +33,8 @@
   "mountain",
   "port",
   "landmark",
-  "river",
   "rail-station",
+  "river",
   "metro-station",
   "marina"
  ],
@@ -555,6 +555,72 @@
    "v": 1690,
    "cell": "K9",
    "note": "標高 20〜32m の段丘 / 家 40 棟 / 通り 12 本"
+  },
+  {
+   "id": "ind-works",
+   "kind": "district",
+   "label": "工業地帯(南の台地)",
+   "lat": 12.239,
+   "lon": -93.696,
+   "u": 2560.1,
+   "v": 848.2,
+   "cell": "N5",
+   "note": "枠 B 410 × 700m / 平場 3.34ha @32.83m / 工場 8 棟 / 煙突 2 / タンク 4"
+  },
+  {
+   "id": "ind-logistics",
+   "kind": "district",
+   "label": "ロジスティクス拠点",
+   "lat": 10.49,
+   "lon": -117.447,
+   "u": 2819.2,
+   "v": 867.3,
+   "cell": "O5",
+   "note": "平場 1.79ha @35.43m / 倉庫 4 + 事務所 + 貨物駅 / コンテナ 15 基 / 引込線が入る"
+  },
+  {
+   "id": "ind-homes",
+   "kind": "district",
+   "label": "居住地区(東岸のひな壇)",
+   "lat": 33.342,
+   "lon": -128.188,
+   "u": 2936.4,
+   "v": 618,
+   "cell": "O4",
+   "note": "3 段(31.25m / 37.43m / 42.02m)/ 家 60 棟"
+  },
+  {
+   "id": "ind-quay",
+   "kind": "port",
+   "label": "工業港の岸壁",
+   "lat": 32.557,
+   "lon": -109.489,
+   "u": 2732.4,
+   "v": 626.6,
+   "cell": "N4",
+   "note": "岸壁 117m / 天端 +4m / 泊地 -4.5m / クレーン 3 基"
+  },
+  {
+   "id": "ind-viaduct",
+   "kind": "landmark",
+   "label": "入り江の長大橋(高速道路)",
+   "lat": 46.304,
+   "lon": -89.597,
+   "u": 2515.4,
+   "v": 476.7,
+   "cell": "M3",
+   "note": "高架 408m / 桁 21m / 橋脚 9 基 / 東の幹線と空港を結ぶ 787m"
+  },
+  {
+   "id": "ind-halt",
+   "kind": "rail-station",
+   "label": "工業地帯の駅(旅客)",
+   "lat": 26.991,
+   "lon": -118.906,
+   "u": 2835.1,
+   "v": 687.3,
+   "cell": "O4",
+   "note": "RAIL_B から引いた旅客線の終端 @31.66m / 住宅のひな壇から歩ける"
   },
   {
    "id": "lighthouse-tower",
