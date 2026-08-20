@@ -1,6 +1,6 @@
 {
  "generatedAtIso": "0000-01-01T00:00:00.000Z",
- "mapSha": "86a52abe4bbfc0d8",
+ "mapSha": "72431d2e37359754",
  "world": {
   "radiusM": 625,
   "seed": 777,
@@ -621,6 +621,61 @@
    "v": 687.3,
    "cell": "O4",
    "note": "RAIL_B から引いた旅客線の終端 @31.66m / 住宅のひな壇から歩ける"
+  },
+  {
+   "id": "hwy-ring",
+   "kind": "landmark",
+   "label": "環状高速(水環の上)",
+   "lat": 29.886,
+   "lon": -0.332,
+   "u": 1541.7,
+   "v": 655.7,
+   "cell": "H4",
+   "note": "一周 1961m / 高架 1929m / 半径 328m / 縦断 max 4%"
+  },
+  {
+   "id": "hwy-n1-tunnel",
+   "kind": "landmark",
+   "label": "北幹線のトンネル",
+   "lat": 36.662,
+   "lon": -35.52,
+   "u": 1925.5,
+   "v": 581.8,
+   "cell": "J3",
+   "note": "739m のうちトンネル 264m / 台地を抜けて既存 H2 の橋へ"
+  },
+  {
+   "id": "hwy-airport-ramp",
+   "kind": "landmark",
+   "label": "空港の下り口",
+   "lat": 50.975,
+   "lon": -35.497,
+   "u": 1925.3,
+   "v": 425.7,
+   "cell": "J3",
+   "note": "469m / トンネル 136m / 空港の平場 22.5m へ"
+  },
+  {
+   "id": "hwy-spiral",
+   "kind": "landmark",
+   "label": "スパイラルジャンクション",
+   "lat": 21.108,
+   "lon": 163.494,
+   "u": 3681.6,
+   "v": 751.5,
+   "cell": "S4",
+   "note": "半径 40m × 1 回転 / 353m / 48.0m → 28.4m / S5 の港・駅・地下鉄口へ"
+  },
+  {
+   "id": "hwy-e1",
+   "kind": "landmark",
+   "label": "東環状(湖を外回り)",
+   "lat": -18.545,
+   "lon": 166.326,
+   "u": 3650.7,
+   "v": 1184,
+   "cell": "S7",
+   "note": "一周 2416m / 高架 616m / 既存 H2 の両端に繋ぐ"
   },
   {
    "id": "lighthouse-tower",
